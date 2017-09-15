@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context=".MainActivity">
+
+
+<!--This is the view that displays the developers on the main activity i.e the first activity you see-->
+
+    <ListView
+        android:id="@+id/developersListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#c2c5c5"
+
+
+        />
+
+
+</LinearLayout>

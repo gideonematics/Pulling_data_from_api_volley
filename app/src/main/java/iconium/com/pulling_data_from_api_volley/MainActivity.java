@@ -3,7 +3,6 @@ package iconium.com.pulling_data_from_api_volley;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -34,32 +33,49 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        /*
+        * This is just a simple progress bar that loads when Volley is pulling
+        * data from the url which is: https://api.github.com/search/users?q=location:lagos+language:java
+        * from github servers.
+        * */
 
         listView = (ListView) findViewById(R.id.developersListView);
         dialog = new ProgressDialog(MainActivity.this);
-        dialog.setMessage("Loading");
+        dialog.setMessage("Loading");// this is the message you see when the progress bar is visible
         dialog.setCancelable(false);
         dialog.setInverseBackgroundForced(false);
         dialog.show();
 
-        //create new requestQueue
+
+        /*
+         *create new requestQueue on Volley
+         *Allows you to queue request on volley
+         *The RequestQueue manages worker threads for running
+         *the network operations, reading from and writing to
+         *the cache, and parsing responses.
+         * */
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
 
-
+        //This is where is sent to get the data from the network.
         ApiRequestNegotiator apiRequest = new ApiRequestNegotiator(
                 Request.Method.GET,
                 URL,
                 ApiDevelopersPayLoadResolver.class,
                 null,
-
+                /*
+                * This is a listner that listens and retrieves the data when its ready.
+                *
+                * */
                 new Response.Listener<ApiDevelopersPayLoadResolver>() {
                     @Override
                     public void onResponse(ApiDevelopersPayLoadResolver _payLoad) {
+                       //clear the temporary array to avoid leaks
                         devsTemp.clear();
+                        //get data from payload
                         apiDevelopersPayLoadResolver = _payLoad;
 
+                        //add new developers from the payload to a temporary arrayList
                         for (Developer d : apiDevelopersPayLoadResolver.getItems()) {
                             devsTemp.add(d);
                         }
@@ -73,12 +89,15 @@ public class MainActivity extends AppCompatActivity {
                         //notify adapter about new data
                         listViewAdapter.notifyDataSetChanged();
 
+                        //hide progress bar when data has finished loading
                         dialog.dismiss();
 
 
                     }
                 },
 
+
+                //Listen for error
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
@@ -89,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         );
 
-
+        //add request to the volley queue
         requestQueue.add(apiRequest);
 
     }

@@ -26,9 +26,9 @@ public class ApiRequestNegotiator extends Request<ApiDevelopersPayLoadResolver> 
     private static  Response.ErrorListener errorListener;
     private static Class<ApiDevelopersPayLoadResolver> devs;
     private static Gson gson = new Gson();
-   // private final String string;
 
 
+    //initialize constructor
     public ApiRequestNegotiator(int _method,
                                 String _url,
                                 Class<ApiDevelopersPayLoadResolver> _devs,
@@ -50,13 +50,22 @@ public class ApiRequestNegotiator extends Request<ApiDevelopersPayLoadResolver> 
 
     @Override
     protected Response<ApiDevelopersPayLoadResolver> parseNetworkResponse(NetworkResponse networkResponse) {
+     /*
+      *  Run the network in the a try catch statement
+      *  so that our doesn't break in case there is an issue
+      * */
 
-//run network request
         try {
+            /*
+             * run network request
+             */
             String json = new String(
                     networkResponse.data,
                     HttpHeaderParser.parseCharset(networkResponse.headers));
-            //return model on sucess
+            /*
+             * Convert the data from json to java using Gson library
+             * the return model on sucess
+             */
             return Response.success(
                     gson.fromJson(json, devs),
                     HttpHeaderParser.parseCacheHeaders(networkResponse));
@@ -74,6 +83,11 @@ public class ApiRequestNegotiator extends Request<ApiDevelopersPayLoadResolver> 
     public Map<String, String> getHeaders() throws AuthFailureError {
         return headers != null ? headers : super.getHeaders();
     }
+
+    /*
+     * Here volley calls you back on the main thread (The thread on which your app is running on)
+     * with the object you returned in parseNetworkResponse()
+     * */
 
     @Override
     protected void deliverResponse(ApiDevelopersPayLoadResolver _devs) {
